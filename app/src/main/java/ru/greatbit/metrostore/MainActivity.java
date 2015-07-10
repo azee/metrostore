@@ -1,8 +1,5 @@
 package ru.greatbit.metrostore;
 
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -12,7 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+
 import java.util.Date;
+
+import ru.greatbit.metrostore.utils.SoundPlayer;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         scale = (EditText) findViewById(R.id.scale);
         button = (Button) findViewById(R.id.play);
         barCounter = (TextView) findViewById(R.id.barCounter);
+
+        SoundPlayer.initSounds(getApplicationContext());
 
         button.setEnabled(true);
     }
@@ -59,26 +61,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    public void togglePlay(View view){
-//        playing = !playing;
-//        button.setText(playing ? "Stop" : "Start");
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                int beatsCounter = 0;
-//                int scaleVal = Integer.parseInt(scale.getText().toString());
-//                int bitrateVal = Integer.parseInt(bitrate.getText().toString());
-//                double duration = getDuration(bitrateVal, scaleVal);
-//                while (playing){
-//                    beatsCounter = beatsCounter >= scaleVal ? 0 : beatsCounter;
-//                    playTone(getTone(scaleVal, beatsCounter), duration);
-//                    playTone(0, duration);
-//                    beatsCounter++;
-//                }
-//            }
-//        }).start();
-//    }
-
     private void setText(final TextView text,final String value){
         runOnUiThread(new Runnable() {
             @Override
@@ -104,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     now = new Date().getTime();
                     if (now - startTime >= quoterDuration){
                         beatsCounter = beatsCounter > scaleVal ? 1 : beatsCounter;
-                        //playTone(500, 1d/10d);
-                        MusicManager.getInstance().play(this, R.raw.my_sound);
+                        SoundPlayer.playSound(getSoundId(beatsCounter));
                         setText(barCounter, Integer.toString(beatsCounter));
                         startTime = now;
                         beatsCounter++;
@@ -113,6 +94,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    private int getSoundId(int beatsCounter) {
+        if (beatsCounter == 1){
+            return 1;
+        }
+        return 2;
     }
 
     private long getQuoterDuration(int bitrate){
@@ -124,79 +112,5 @@ public class MainActivity extends AppCompatActivity {
         double barsInSecond = bitrate/60d;
         double quatersInSecond = barsInSecond * scale;
         return 1d/quatersInSecond/2d;
-    }
-
-    private double getTone(int scale, int beatsCount){
-        if (beatsCount == 0){
-            return 500;
-        }
-        return 440;
-    }
-
-    public void playTone(double freqOfTone, double duration) {
-        int sampleRate = 8000;              // a number
-
-        double dnumSamples = duration * sampleRate;
-        dnumSamples = Math.ceil(dnumSamples);
-        int numSamples = (int) dnumSamples;
-        double sample[] = new double[numSamples];
-        byte generatedSnd[] = new byte[2 * numSamples];
-
-
-        for (int i = 0; i < numSamples; ++i) {      // Fill the sample array
-            sample[i] = Math.sin(freqOfTone * 2 * Math.PI * i / (sampleRate));
-        }
-
-        // convert to 16 bit pcm sound array
-        // assumes the sample buffer is normalized.
-        // convert to 16 bit pcm sound array
-        // assumes the sample buffer is normalised.
-        int idx = 0;
-        int i = 0 ;
-
-        int ramp = numSamples / 20 ;                                    // Amplitude ramp as a percent of sample count
-
-
-        for (i = 0; i< ramp; ++i) {                                     // Ramp amplitude up (to avoid clicks)
-            double dVal = sample[i];
-            // Ramp up to maximum
-            final short val = (short) ((dVal * 32767 * i/ramp));
-            // in 16 bit wav PCM, first byte is the low order byte
-            generatedSnd[idx++] = (byte) (val & 0x00ff);
-            generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
-        }
-
-
-        for (i = i; i< numSamples - ramp; ++i) {                        // Max amplitude for most of the samples
-            double dVal = sample[i];
-            // scale to maximum amplitude
-            final short val = (short) ((dVal * 32767));
-            // in 16 bit wav PCM, first byte is the low order byte
-            generatedSnd[idx++] = (byte) (val & 0x00ff);
-            generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
-        }
-
-        for (i = i; i< numSamples; ++i) {                               // Ramp amplitude down
-            double dVal = sample[i];
-            // Ramp down to zero
-            final short val = (short) ((dVal * 32767 * (numSamples-i)/ramp ));
-            // in 16 bit wav PCM, first byte is the low order byte
-            generatedSnd[idx++] = (byte) (val & 0x00ff);
-            generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
-        }
-
-        AudioTrack audioTrack = null;                                   // Get audio track
-        try {
-            int bufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
-            audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-                    sampleRate, AudioFormat.CHANNEL_OUT_MONO,
-                    AudioFormat.ENCODING_PCM_16BIT, bufferSize,
-                    AudioTrack.MODE_STREAM);
-            audioTrack.play();                                          // Play the track
-            audioTrack.write(generatedSnd, 0, generatedSnd.length);     // Load the track
-        }
-        catch (Exception e){
-        }
-        if (audioTrack != null) audioTrack.release();           // Track play done. Release track.
     }
 }
