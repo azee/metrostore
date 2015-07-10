@@ -5,7 +5,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
+    <TextView android:text="@string/app_title" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView" />
 
@@ -16,23 +16,24 @@
         android:ems="10"
         android:id="@+id/bitrate"
         android:layout_below="@+id/textView"
-        android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView"
-        android:text="@string/default_tempo" />
+        android:text="@string/default_tempo"
+        android:layout_alignLeft="@+id/scale"
+        android:layout_alignStart="@+id/scale"
+        android:layout_toLeftOf="@+id/triols"
+        android:layout_toStartOf="@+id/triols" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btn_start_name"
         android:id="@+id/play"
-        android:layout_marginTop="35dp"
         android:onClick="togglePlay"
         android:enabled="false"
         android:layout_below="@+id/scale"
-        android:layout_alignLeft="@+id/bitrate"
-        android:layout_alignStart="@+id/bitrate"
-        android:layout_alignRight="@+id/bitrate"
-        android:layout_alignEnd="@+id/bitrate" />
+        android:layout_toRightOf="@+id/textView"
+        android:layout_above="@+id/eights"
+        android:layout_alignRight="@+id/sixteens"
+        android:layout_alignEnd="@+id/sixteens" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -48,11 +49,11 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/barCounter"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="76dp"
         android:text="1"
-        android:editable="false" />
+        android:editable="false"
+        android:layout_below="@+id/eights"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp" />
 
     <ToggleButton
         android:layout_width="wrap_content"
@@ -80,7 +81,6 @@
         android:textOn="1/8"
         android:layout_alignTop="@+id/quoters"
         android:layout_toStartOf="@+id/scale"
-        android:layout_toLeftOf="@+id/scale"
         android:onClick="onSoundSelected" />
 
     <ToggleButton
@@ -105,8 +105,6 @@
         android:checked="false"
         android:textOff="1/3"
         android:textOn="1/3"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:onClick="onSoundSelected" />
 
 </RelativeLayout>
