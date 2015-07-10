@@ -8,9 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import ru.greatbit.metrostore.utils.SoundPlayer;
 
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText scale;
     private Button button;
     private TextView barCounter;
+    Map<Integer, Boolean> beatsToPlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
         barCounter = (TextView) findViewById(R.id.barCounter);
 
         SoundPlayer.initSounds(getApplicationContext());
+
+        beatsToPlay = new HashMap<>(4);
+        beatsToPlay.put(R.id.quoters, true);
+        beatsToPlay.put(R.id.eights, false);
+        beatsToPlay.put(R.id.sixteens, false);
+        beatsToPlay.put(R.id.triols, false);
 
         button.setEnabled(true);
     }
@@ -61,6 +71,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void onSoundSelected(View view){
+        beatsToPlay.put(view.getId(), ((ToggleButton) view).isChecked());
+    }
+
     private void setText(final TextView text,final String value){
         runOnUiThread(new Runnable() {
             @Override
@@ -80,16 +94,33 @@ public class MainActivity extends AppCompatActivity {
                 int scaleVal = Integer.parseInt(scale.getText().toString());
                 int bitrateVal = Integer.parseInt(bitrate.getText().toString());
                 long quoterDuration = getQuoterDuration(bitrateVal);
-                long startTime = new Date().getTime();
-                long now;
+
+                long now = new Date().getTime();
+                long quoterStartTime = now;
+                long eighthsStartTime = now;
+                long sixteensStartTime = now;
+                long triolsStartTime = now;
                 while (playing){
                     now = new Date().getTime();
-                    if (now - startTime >= quoterDuration){
+                    if (now - quoterStartTime >= quoterDuration){
                         beatsCounter = beatsCounter > scaleVal ? 1 : beatsCounter;
                         SoundPlayer.playSound(getSoundId(beatsCounter));
                         setText(barCounter, Integer.toString(beatsCounter));
-                        startTime = now;
+                        quoterStartTime = now;
                         beatsCounter++;
+                        eighthsStartTime = now;
+                        sixteensStartTime = now;
+                        triolsStartTime = now;
+                    } else if(now - eighthsStartTime >= Math.round(new Double(quoterDuration)/2d) && beatsToPlay.get(R.id.eights)) {
+                        SoundPlayer.playSound(2);
+                        eighthsStartTime = now;
+                        sixteensStartTime = now;
+                    } else if(now - sixteensStartTime >= Math.round(new Double(quoterDuration)/4d) && beatsToPlay.get(R.id.sixteens)) {
+                        SoundPlayer.playSound(2);
+                        sixteensStartTime = now;
+                    } else if(now - triolsStartTime >= Math.round(new Double(quoterDuration)/3d) && beatsToPlay.get(R.id.triols)) {
+                        SoundPlayer.playSound(2);
+                        triolsStartTime = now;
                     }
                 }
             }
@@ -97,20 +128,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getSoundId(int beatsCounter) {
-        if (beatsCounter == 1){
+        if (beatsCounter == 1 && beatsToPlay.get(R.id.quoters)){
             return 1;
         }
         return 2;
     }
 
     private long getQuoterDuration(int bitrate){
-        int beatsPerSecond = bitrate/60;
-        return 1000 / beatsPerSecond;
-    }
-
-    private double getDuration(int bitrate, int scale){
-        double barsInSecond = bitrate/60d;
-        double quatersInSecond = barsInSecond * scale;
-        return 1d/quatersInSecond/2d;
+        double beatsPerSecond = new Double(bitrate)/60d;
+        double duration = 1000d / beatsPerSecond;
+        return Math.round(duration);
     }
 }

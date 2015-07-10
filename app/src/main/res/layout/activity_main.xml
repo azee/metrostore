@@ -25,22 +25,23 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_start_name"
         android:id="@+id/play"
-        android:layout_below="@+id/bitrate"
+        android:layout_marginTop="35dp"
+        android:onClick="togglePlay"
+        android:enabled="false"
+        android:layout_below="@+id/scale"
         android:layout_alignLeft="@+id/bitrate"
         android:layout_alignStart="@+id/bitrate"
-        android:layout_marginTop="66dp"
         android:layout_alignRight="@+id/bitrate"
-        android:layout_alignEnd="@+id/bitrate"
-        android:onClick="togglePlay"
-        android:enabled="false" />
+        android:layout_alignEnd="@+id/bitrate" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/scale"
         android:text="@string/default_bitrate"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/bitrate"
+        android:layout_alignRight="@+id/barCounter"
+        android:layout_alignEnd="@+id/barCounter" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,6 +51,62 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="76dp"
-        android:text="1" />
+        android:text="1"
+        android:editable="false" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1/4"
+        android:id="@+id/quoters"
+        android:checked="true"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:elegantTextHeight="false"
+        android:textOff="1/4"
+        android:textOn="1/4"
+        android:layout_toLeftOf="@+id/play"
+        android:layout_toStartOf="@+id/play"
+        android:onClick="onSoundSelected" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1/8"
+        android:id="@+id/eights"
+        android:checked="false"
+        android:textOff="1/8"
+        android:textOn="1/8"
+        android:layout_alignTop="@+id/quoters"
+        android:layout_toStartOf="@+id/scale"
+        android:layout_toLeftOf="@+id/scale"
+        android:onClick="onSoundSelected" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1/16"
+        android:id="@+id/sixteens"
+        android:checked="false"
+        android:textOff="1/16"
+        android:textOn="1/16"
+        android:layout_alignTop="@+id/eights"
+        android:layout_toRightOf="@+id/eights"
+        android:onClick="onSoundSelected" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1/3"
+        android:id="@+id/triols"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/sixteens"
+        android:checked="false"
+        android:textOff="1/3"
+        android:textOn="1/3"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="onSoundSelected" />
 
 </RelativeLayout>

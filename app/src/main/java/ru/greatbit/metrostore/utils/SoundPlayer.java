@@ -16,7 +16,7 @@ import ru.greatbit.metrostore.R;
 public class SoundPlayer {
     private static SoundPool soundPool;
     private static HashMap<Integer, Integer> soundPoolMap;
-    private static final int STREAMS = 2;
+    private static final int STREAMS = 1;
     private static final float volume = 1;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
