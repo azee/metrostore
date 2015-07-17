@@ -1,5 +1,6 @@
 package ru.greatbit.metrostore;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -125,6 +126,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    public void goToList(View view){
+        startActivity(new Intent(this, ListActivity.class));
     }
 
     private int getSoundId(int beatsCounter) {

@@ -15,12 +15,10 @@
         android:inputType="number"
         android:ems="10"
         android:id="@+id/bitrate"
-        android:layout_below="@+id/textView"
         android:text="@string/default_tempo"
-        android:layout_alignLeft="@+id/scale"
-        android:layout_alignStart="@+id/scale"
-        android:layout_toLeftOf="@+id/triols"
-        android:layout_toStartOf="@+id/triols" />
+        android:layout_below="@+id/textView"
+        android:layout_toRightOf="@+id/play"
+        android:layout_toEndOf="@+id/play" />
 
     <Button
         android:layout_width="wrap_content"
@@ -30,10 +28,8 @@
         android:onClick="togglePlay"
         android:enabled="false"
         android:layout_below="@+id/scale"
-        android:layout_toRightOf="@+id/textView"
-        android:layout_above="@+id/eights"
-        android:layout_alignRight="@+id/sixteens"
-        android:layout_alignEnd="@+id/sixteens" />
+        android:layout_toLeftOf="@+id/triols"
+        android:layout_toStartOf="@+id/triols" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -58,39 +54,40 @@
     <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1/4"
+        android:text="@string/quoter_btn"
         android:id="@+id/quoters"
         android:checked="true"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:elegantTextHeight="false"
-        android:textOff="1/4"
-        android:textOn="1/4"
-        android:layout_toLeftOf="@+id/play"
+        android:textOff="@string/quoter_btn"
+        android:textOn="@string/quoter_btn"
         android:layout_toStartOf="@+id/play"
-        android:onClick="onSoundSelected" />
+        android:onClick="onSoundSelected"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView" />
 
     <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1/8"
+        android:text="@string/eights_btn"
         android:id="@+id/eights"
         android:checked="false"
-        android:textOff="1/8"
-        android:textOn="1/8"
-        android:layout_alignTop="@+id/quoters"
+        android:textOff="@string/eights_btn"
+        android:textOn="@string/eights_btn"
         android:layout_toStartOf="@+id/scale"
-        android:onClick="onSoundSelected" />
+        android:onClick="onSoundSelected"
+        android:layout_alignTop="@+id/quoters" />
 
     <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1/16"
+        android:text="@string/sixteens_btn"
         android:id="@+id/sixteens"
         android:checked="false"
-        android:textOff="1/16"
-        android:textOn="1/16"
+        android:textOff="@string/sixteens_btn"
+        android:textOn="@string/sixteens_btn"
         android:layout_alignTop="@+id/eights"
         android:layout_toRightOf="@+id/eights"
         android:onClick="onSoundSelected" />
@@ -98,13 +95,32 @@
     <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1/3"
+        android:text="@string/triols_btn"
         android:id="@+id/triols"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/sixteens"
         android:checked="false"
-        android:textOff="1/3"
-        android:textOn="1/3"
+        android:textOff="@string/triols_btn"
+        android:textOn="@string/triols_btn"
         android:onClick="onSoundSelected" />
+
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/numberPicker"
+        android:layout_alignTop="@+id/scale"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/list_activity_btn"
+        android:id="@+id/goToListBtn"
+        android:onClick="goToList"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
