@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
-        android:id="@+id/bitrate"
+        android:id="@+id/tempo"
         android:text="@string/default_tempo"
         android:layout_below="@+id/textView"
         android:layout_toRightOf="@+id/play"
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/scale"
         android:text="@string/default_bitrate"
-        android:layout_below="@+id/bitrate"
+        android:layout_below="@+id/tempo"
         android:layout_alignRight="@+id/barCounter"
         android:layout_alignEnd="@+id/barCounter" />
 

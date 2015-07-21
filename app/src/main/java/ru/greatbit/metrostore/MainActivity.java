@@ -13,9 +13,8 @@ import android.widget.ToggleButton;
 
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
+import ru.greatbit.metrostore.beans.SongConfiguration;
 import ru.greatbit.metrostore.utils.sound.SoundPlayer;
 
 
@@ -23,29 +22,24 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean playing = false;
 
-    private EditText bitrate;
+    SongConfiguration configuration = new SongConfiguration();
+
+    private EditText tempo;
     private EditText scale;
     private Button button;
     private TextView barCounter;
-    Map<Integer, Boolean> beatsToPlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bitrate = (EditText) findViewById(R.id.bitrate);
+        tempo = (EditText) findViewById(R.id.tempo);
         scale = (EditText) findViewById(R.id.scale);
         button = (Button) findViewById(R.id.play);
         barCounter = (TextView) findViewById(R.id.barCounter);
 
         SoundPlayer.initSounds(getApplicationContext());
-
-        beatsToPlay = new HashMap<>(4);
-        beatsToPlay.put(R.id.quoters, true);
-        beatsToPlay.put(R.id.eights, false);
-        beatsToPlay.put(R.id.sixteens, false);
-        beatsToPlay.put(R.id.triols, false);
 
         button.setEnabled(true);
     }
@@ -73,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSoundSelected(View view){
-        beatsToPlay.put(view.getId(), ((ToggleButton) view).isChecked());
+        configuration.getBeatsToPlay().put(view.getId(), ((ToggleButton) view).isChecked());
     }
 
     private void setText(final TextView text,final String value){
@@ -92,19 +86,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 int beatsCounter = 1;
-                int scaleVal = Integer.parseInt(scale.getText().toString());
-                int bitrateVal = Integer.parseInt(bitrate.getText().toString());
-                long quoterDuration = getQuoterDuration(bitrateVal);
+                configuration.setScale(Integer.parseInt(scale.getText().toString()));
+                configuration.setTempo(Integer.parseInt(tempo.getText().toString()));
+                long quoterDuration = getQuoterDuration(configuration.getTempo());
+                long eightsDuration = quoterDuration/2;
+                long sixteensDuration = quoterDuration/4;
+                long triolsDuration = quoterDuration/3;
 
-                long now = new Date().getTime();
+                long now = System.nanoTime();
                 long quoterStartTime = now;
                 long eighthsStartTime = now;
                 long sixteensStartTime = now;
                 long triolsStartTime = now;
                 while (playing){
-                    now = new Date().getTime();
+                    now = System.nanoTime();
                     if (now - quoterStartTime >= quoterDuration){
-                        beatsCounter = beatsCounter > scaleVal ? 1 : beatsCounter;
+                        beatsCounter = beatsCounter > configuration.getScale() ? 1 : beatsCounter;
                         SoundPlayer.playSound(getSoundId(beatsCounter));
                         setText(barCounter, Integer.toString(beatsCounter));
                         quoterStartTime = now;
@@ -112,14 +109,31 @@ public class MainActivity extends AppCompatActivity {
                         eighthsStartTime = now;
                         sixteensStartTime = now;
                         triolsStartTime = now;
-                    } else if(now - eighthsStartTime >= Math.round(new Double(quoterDuration)/2d) && beatsToPlay.get(R.id.eights)) {
+//                    } else if(now - eighthsStartTime >= Math.round(new Double(quoterDuration)/2d)
+//                            && configuration.getBeatsToPlay().get(R.id.eights)) {
+//                        SoundPlayer.playSound(2);
+//                        eighthsStartTime = now;
+//                        sixteensStartTime = now;
+//                    } else if(now - sixteensStartTime >= Math.round(new Double(quoterDuration)/4d)
+//                            && configuration.getBeatsToPlay().get(R.id.sixteens)) {
+//                        SoundPlayer.playSound(2);
+//                        sixteensStartTime = now;
+//                    } else if(now - triolsStartTime >= Math.round(new Double(quoterDuration)/3d)
+//                            && configuration.getBeatsToPlay().get(R.id.triols)) {
+//                        SoundPlayer.playSound(2);
+//                        triolsStartTime = now;
+//                    }
+                    } else if(now - eighthsStartTime >= eightsDuration
+                            && configuration.getBeatsToPlay().get(R.id.eights)) {
                         SoundPlayer.playSound(2);
                         eighthsStartTime = now;
                         sixteensStartTime = now;
-                    } else if(now - sixteensStartTime >= Math.round(new Double(quoterDuration)/4d) && beatsToPlay.get(R.id.sixteens)) {
+                    } else if(now - sixteensStartTime >= sixteensDuration
+                            && configuration.getBeatsToPlay().get(R.id.sixteens)) {
                         SoundPlayer.playSound(2);
                         sixteensStartTime = now;
-                    } else if(now - triolsStartTime >= Math.round(new Double(quoterDuration)/3d) && beatsToPlay.get(R.id.triols)) {
+                    } else if(now - triolsStartTime >= triolsDuration
+                            && configuration.getBeatsToPlay().get(R.id.triols)) {
                         SoundPlayer.playSound(2);
                         triolsStartTime = now;
                     }
@@ -133,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getSoundId(int beatsCounter) {
-        if (beatsCounter == 1 && beatsToPlay.get(R.id.quoters)){
+        if (beatsCounter == 1 && configuration.getBeatsToPlay().get(R.id.quoters)){
             return 1;
         }
         return 2;
@@ -141,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
     private long getQuoterDuration(int bitrate){
         double beatsPerSecond = new Double(bitrate)/60d;
-        double duration = 1000d / beatsPerSecond;
+        double duration = 1000000000d / beatsPerSecond;
         return Math.round(duration);
     }
 }
