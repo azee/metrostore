@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import ru.greatbit.metrostore.utils.SoundPlayer;
+import ru.greatbit.metrostore.utils.sound.SoundPlayer;
 
 
 public class MainActivity extends AppCompatActivity {
