@@ -11,6 +11,6 @@
     <string name="back_btn">Back</string>
     <string name="quoter_btn">1/4</string>
     <string name="eights_btn">1/8</string>
-    <string name="sixteens_btn">1/16</string>
-    <string name="triols_btn">1/3</string>
+    <string name="sixteenths_btn">1/16</string>
+    <string name="triplets_btn">1/3</string>
 </resources>

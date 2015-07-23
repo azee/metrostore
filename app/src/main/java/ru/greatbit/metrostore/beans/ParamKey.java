@@ -4,23 +4,22 @@ package ru.greatbit.metrostore.beans;
  * Created by azee on 24.07.15.
  */
 public enum ParamKey {
-    MAIN_ACTIVITY(1),
-    LIST_ACTIVITY(2)
+    CONFIGURATION("CONFIGURATION")
     ;
 
-    private final int value;
+    private final String value;
 
-    ParamKey(int value) {
+    ParamKey(String value) {
         this.value = value;
     }
 
-    public int value() {
+    public String value() {
         return value;
     }
 
     public static ParamKey fromValue(int v) {
         for (ParamKey c: ParamKey.values()) {
-            if (c.value == v) {
+            if (c.value.equals(v)) {
                 return c;
             }
         }

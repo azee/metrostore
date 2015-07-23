@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import ru.greatbit.metrostore.R;
+import ru.greatbit.metrostore.beans.ParamKey;
 
 /**
  * Created by azee on 17.07.15.
@@ -46,9 +47,9 @@ public class ListActivity extends AppCompatActivity {
     }
 
     public void goToMain(View view){
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("configuration", selectedConfiguration);
-        startActivity(intent);
+        Intent intent = new Intent();
+        intent.putExtra(ParamKey.CONFIGURATION.value(), selectedConfiguration);
+        setResult(RESULT_OK, intent);
+        finish();
     }
-
 }

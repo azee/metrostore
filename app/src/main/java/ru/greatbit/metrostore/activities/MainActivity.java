@@ -14,6 +14,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import ru.greatbit.metrostore.R;
+import ru.greatbit.metrostore.beans.ParamKey;
+import ru.greatbit.metrostore.beans.ResponseCode;
 import ru.greatbit.metrostore.beans.SongConfiguration;
 import ru.greatbit.metrostore.utils.sound.SoundPlayer;
 
@@ -22,32 +24,38 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean playing = false;
 
-    SongConfiguration configuration;
+    SongConfiguration configuration = new SongConfiguration();;
 
     //private EditText tempo;
     private EditText scale;
     private Button button;
     private TextView barCounter;
-
     private NumberPicker tempo;
+
+    private ToggleButton quoters;
+    private ToggleButton eights;
+    private ToggleButton sixteenths;
+    private ToggleButton triplets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        configuration = (SongConfiguration) getIntent().getExtras().get("configuration");
-        if (configuration == null){
-            configuration = new SongConfiguration();
-            //tempo = (EditText) findViewById(R.id.tempo);
-            scale = (EditText) findViewById(R.id.scale);
-            button = (Button) findViewById(R.id.play);
-            barCounter = (TextView) findViewById(R.id.barCounter);
+        //tempo = (EditText) findViewById(R.id.tempo);
+        scale = (EditText) findViewById(R.id.scale);
+        button = (Button) findViewById(R.id.play);
+        barCounter = (TextView) findViewById(R.id.barCounter);
 
-            tempo = (NumberPicker) findViewById(R.id.tempoPicker);
-            tempo.setMinValue(60);
-            tempo.setMaxValue(250);
-        }
+        tempo = (NumberPicker) findViewById(R.id.tempoPicker);
+        tempo.setMinValue(60);
+        tempo.setMaxValue(250);
+        tempo.setValue(120);
+
+        quoters = (ToggleButton)findViewById(R.id.quoters);
+        eights = (ToggleButton)findViewById(R.id.eights);
+        sixteenths = (ToggleButton)findViewById(R.id.sixteenths);
+        triplets = (ToggleButton)findViewById(R.id.triplets);
 
         SoundPlayer.initSounds(getApplicationContext());
 
@@ -78,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onSoundSelected(View view){
         configuration.getBeatsToPlay().put(view.getId(), ((ToggleButton) view).isChecked());
+
     }
 
     private void setText(final TextView text,final String value){
@@ -97,16 +106,11 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 int beatsCounter = 1;
                 configuration.setScale(Integer.parseInt(scale.getText().toString()));
-//                configuration.setTempo(Integer.parseInt(tempo.getText().toString()));
                 configuration.setTempo(tempo.getValue());
                 long quoterDuration = getQuoterDuration(configuration.getTempo());
                 long eightsDuration = quoterDuration/2;
                 long sixteenthsDuration = quoterDuration/4;
                 long tripletsDuration = quoterDuration/3;
-
-                boolean playEights = configuration.getBeatsToPlay().get(R.id.eights);
-                boolean playSixteethns = configuration.getBeatsToPlay().get(R.id.sixteenths);
-                boolean playTriplets = configuration.getBeatsToPlay().get(R.id.triplets);
 
                 long now = System.nanoTime();
                 long quoterStartTime = now;
@@ -124,14 +128,16 @@ public class MainActivity extends AppCompatActivity {
                         eighthsStartTime = now;
                         sixteenthsStartTime = now;
                         tripletsStartTime = now;
-                    } else if(playEights && now - eighthsStartTime >= eightsDuration) {
+                    } else if(configuration.getBeatsToPlay().get(R.id.eights)
+                            && now - eighthsStartTime >= eightsDuration) {
                         SoundPlayer.playSound(2);
                         eighthsStartTime = now;
                         sixteenthsStartTime = now;
-                    } else if(playSixteethns && now - sixteenthsStartTime >= sixteenthsDuration) {
+                    } else if(configuration.getBeatsToPlay().get(R.id.sixteenths)
+                            && now - sixteenthsStartTime >= sixteenthsDuration) {
                         SoundPlayer.playSound(2);
                         sixteenthsStartTime = now;
-                    } else if(playTriplets && now - tripletsStartTime >= tripletsDuration) {
+                    } else if(configuration.getBeatsToPlay().get(R.id.triplets) && now - tripletsStartTime >= tripletsDuration) {
                         SoundPlayer.playSound(2);
                         tripletsStartTime = now;
                     }
@@ -142,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToList(View view){
         Intent intent = new Intent(this, ListActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, ResponseCode.LIST_ACTIVITY.value());
     }
 
     private int getSoundId(int beatsCounter) {
@@ -161,5 +167,25 @@ public class MainActivity extends AppCompatActivity {
     private void onSave(){
         Toast toast = Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ResponseCode.LIST_ACTIVITY.value()
+                && resultCode == RESULT_OK
+                && data.getSerializableExtra(ParamKey.CONFIGURATION.value()) != null){
+            configuration = (SongConfiguration) data.getSerializableExtra(ParamKey.CONFIGURATION.value());
+            refreshView();
+        }
+    }
+
+    private void refreshView() {
+        scale.setText(configuration.getScale());
+        tempo.setValue(configuration.getTempo());
+
+        quoters.setPressed(configuration.getBeatsToPlay().get(quoters.getId()));
+        eights.setPressed(configuration.getBeatsToPlay().get(eights.getId()));
+        sixteenths.setPressed(configuration.getBeatsToPlay().get(sixteenths.getId()));
+        triplets.setPressed(configuration.getBeatsToPlay().get(triplets.getId()));
     }
 }

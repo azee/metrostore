@@ -18,8 +18,8 @@ public class SongConfiguration implements Serializable{
     public SongConfiguration() {
         beatsToPlay.put(R.id.quoters, true);
         beatsToPlay.put(R.id.eights, false);
-        beatsToPlay.put(R.id.sixteens, false);
-        beatsToPlay.put(R.id.triols, false);
+        beatsToPlay.put(R.id.sixteenths, false);
+        beatsToPlay.put(R.id.triplets, false);
     }
 
     public String getName() {
