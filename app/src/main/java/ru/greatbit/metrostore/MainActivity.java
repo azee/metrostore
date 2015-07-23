@@ -11,9 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-
-import java.util.Date;
-
 import ru.greatbit.metrostore.beans.SongConfiguration;
 import ru.greatbit.metrostore.utils.sound.SoundPlayer;
 
@@ -22,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean playing = false;
 
-    SongConfiguration configuration = new SongConfiguration();
+    SongConfiguration configuration;
 
     private EditText tempo;
     private EditText scale;
@@ -34,10 +31,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tempo = (EditText) findViewById(R.id.tempo);
-        scale = (EditText) findViewById(R.id.scale);
-        button = (Button) findViewById(R.id.play);
-        barCounter = (TextView) findViewById(R.id.barCounter);
+        configuration = (SongConfiguration) getIntent().getExtras().get("configuration");
+        if (configuration == null){
+            configuration = new SongConfiguration();
+            tempo = (EditText) findViewById(R.id.tempo);
+            scale = (EditText) findViewById(R.id.scale);
+            button = (Button) findViewById(R.id.play);
+            barCounter = (TextView) findViewById(R.id.barCounter);
+        }
 
         SoundPlayer.initSounds(getApplicationContext());
 
@@ -109,20 +110,6 @@ public class MainActivity extends AppCompatActivity {
                         eighthsStartTime = now;
                         sixteensStartTime = now;
                         triolsStartTime = now;
-//                    } else if(now - eighthsStartTime >= Math.round(new Double(quoterDuration)/2d)
-//                            && configuration.getBeatsToPlay().get(R.id.eights)) {
-//                        SoundPlayer.playSound(2);
-//                        eighthsStartTime = now;
-//                        sixteensStartTime = now;
-//                    } else if(now - sixteensStartTime >= Math.round(new Double(quoterDuration)/4d)
-//                            && configuration.getBeatsToPlay().get(R.id.sixteens)) {
-//                        SoundPlayer.playSound(2);
-//                        sixteensStartTime = now;
-//                    } else if(now - triolsStartTime >= Math.round(new Double(quoterDuration)/3d)
-//                            && configuration.getBeatsToPlay().get(R.id.triols)) {
-//                        SoundPlayer.playSound(2);
-//                        triolsStartTime = now;
-//                    }
                     } else if(now - eighthsStartTime >= eightsDuration
                             && configuration.getBeatsToPlay().get(R.id.eights)) {
                         SoundPlayer.playSound(2);
@@ -143,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToList(View view){
-        startActivity(new Intent(this, ListActivity.class));
+        Intent intent = new Intent(this, ListActivity.class);
+        startActivity(intent);
     }
 
     private int getSoundId(int beatsCounter) {

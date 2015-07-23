@@ -1,16 +1,21 @@
 package ru.greatbit.metrostore;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import ru.greatbit.metrostore.beans.SongConfiguration;
+
 /**
  * Created by azee on 17.07.15.
  */
 public class ListActivity extends AppCompatActivity {
+
+    Configuration selectedConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,9 @@ public class ListActivity extends AppCompatActivity {
     }
 
     public void goToMain(View view){
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("configuration", selectedConfiguration);
+        startActivity(intent);
     }
+
 }

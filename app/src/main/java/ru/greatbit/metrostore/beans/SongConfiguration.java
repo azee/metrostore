@@ -1,5 +1,6 @@
 package ru.greatbit.metrostore.beans;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,7 +9,7 @@ import ru.greatbit.metrostore.R;
 /**
  * Created by azee on 22.07.15.
  */
-public class SongConfiguration {
+public class SongConfiguration implements Serializable{
     protected String name;
     protected int scale;
     protected int tempo;
