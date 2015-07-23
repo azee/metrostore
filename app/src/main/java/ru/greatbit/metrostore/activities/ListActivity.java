@@ -1,4 +1,4 @@
-package ru.greatbit.metrostore;
+package ru.greatbit.metrostore.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import ru.greatbit.metrostore.beans.SongConfiguration;
+import ru.greatbit.metrostore.R;
 
 /**
  * Created by azee on 17.07.15.

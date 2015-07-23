@@ -1,4 +1,4 @@
-package ru.greatbit.metrostore;
+package ru.greatbit.metrostore.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,9 +8,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import ru.greatbit.metrostore.R;
 import ru.greatbit.metrostore.beans.SongConfiguration;
 import ru.greatbit.metrostore.utils.sound.SoundPlayer;
 
@@ -21,10 +24,12 @@ public class MainActivity extends AppCompatActivity {
 
     SongConfiguration configuration;
 
-    private EditText tempo;
+    //private EditText tempo;
     private EditText scale;
     private Button button;
     private TextView barCounter;
+
+    private NumberPicker tempo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +39,14 @@ public class MainActivity extends AppCompatActivity {
         configuration = (SongConfiguration) getIntent().getExtras().get("configuration");
         if (configuration == null){
             configuration = new SongConfiguration();
-            tempo = (EditText) findViewById(R.id.tempo);
+            //tempo = (EditText) findViewById(R.id.tempo);
             scale = (EditText) findViewById(R.id.scale);
             button = (Button) findViewById(R.id.play);
             barCounter = (TextView) findViewById(R.id.barCounter);
+
+            tempo = (NumberPicker) findViewById(R.id.tempoPicker);
+            tempo.setMinValue(60);
+            tempo.setMaxValue(250);
         }
 
         SoundPlayer.initSounds(getApplicationContext());
@@ -88,41 +97,43 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 int beatsCounter = 1;
                 configuration.setScale(Integer.parseInt(scale.getText().toString()));
-                configuration.setTempo(Integer.parseInt(tempo.getText().toString()));
+//                configuration.setTempo(Integer.parseInt(tempo.getText().toString()));
+                configuration.setTempo(tempo.getValue());
                 long quoterDuration = getQuoterDuration(configuration.getTempo());
                 long eightsDuration = quoterDuration/2;
-                long sixteensDuration = quoterDuration/4;
-                long triolsDuration = quoterDuration/3;
+                long sixteenthsDuration = quoterDuration/4;
+                long tripletsDuration = quoterDuration/3;
+
+                boolean playEights = configuration.getBeatsToPlay().get(R.id.eights);
+                boolean playSixteethns = configuration.getBeatsToPlay().get(R.id.sixteenths);
+                boolean playTriplets = configuration.getBeatsToPlay().get(R.id.triplets);
 
                 long now = System.nanoTime();
                 long quoterStartTime = now;
                 long eighthsStartTime = now;
-                long sixteensStartTime = now;
-                long triolsStartTime = now;
+                long sixteenthsStartTime = now;
+                long tripletsStartTime = now;
                 while (playing){
                     now = System.nanoTime();
                     if (now - quoterStartTime >= quoterDuration){
                         beatsCounter = beatsCounter > configuration.getScale() ? 1 : beatsCounter;
-                        SoundPlayer.playSound(getSoundId(beatsCounter));
                         setText(barCounter, Integer.toString(beatsCounter));
-                        quoterStartTime = now;
+                        SoundPlayer.playSound(getSoundId(beatsCounter));
                         beatsCounter++;
+                        quoterStartTime = now;
                         eighthsStartTime = now;
-                        sixteensStartTime = now;
-                        triolsStartTime = now;
-                    } else if(now - eighthsStartTime >= eightsDuration
-                            && configuration.getBeatsToPlay().get(R.id.eights)) {
+                        sixteenthsStartTime = now;
+                        tripletsStartTime = now;
+                    } else if(playEights && now - eighthsStartTime >= eightsDuration) {
                         SoundPlayer.playSound(2);
                         eighthsStartTime = now;
-                        sixteensStartTime = now;
-                    } else if(now - sixteensStartTime >= sixteensDuration
-                            && configuration.getBeatsToPlay().get(R.id.sixteens)) {
+                        sixteenthsStartTime = now;
+                    } else if(playSixteethns && now - sixteenthsStartTime >= sixteenthsDuration) {
                         SoundPlayer.playSound(2);
-                        sixteensStartTime = now;
-                    } else if(now - triolsStartTime >= triolsDuration
-                            && configuration.getBeatsToPlay().get(R.id.triols)) {
+                        sixteenthsStartTime = now;
+                    } else if(playTriplets && now - tripletsStartTime >= tripletsDuration) {
                         SoundPlayer.playSound(2);
-                        triolsStartTime = now;
+                        tripletsStartTime = now;
                     }
                 }
             }
@@ -145,5 +156,10 @@ public class MainActivity extends AppCompatActivity {
         double beatsPerSecond = new Double(bitrate)/60d;
         double duration = 1000000000d / beatsPerSecond;
         return Math.round(duration);
+    }
+
+    private void onSave(){
+        Toast toast = Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT);
+        toast.show();
     }
 }
