@@ -16,16 +16,15 @@
         android:id="@+id/play"
         android:onClick="togglePlay"
         android:enabled="false"
-        android:layout_below="@+id/tempoPicker"
-        android:layout_toLeftOf="@+id/triplets"
-        android:layout_above="@+id/eights" />
+        android:layout_above="@+id/eights"
+        android:layout_alignLeft="@+id/goToListBtn"
+        android:layout_alignStart="@+id/goToListBtn" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/scale"
         android:text="@string/default_bitrate"
-        android:layout_alignTop="@+id/tempoPicker"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="52dp"
@@ -39,9 +38,9 @@
         android:id="@+id/barCounter"
         android:text="1"
         android:editable="false"
-        android:layout_below="@+id/eights"
+        android:layout_above="@+id/goToListBtn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp" />
+        android:layout_marginBottom="39dp" />
 
     <ToggleButton
         android:layout_width="wrap_content"
@@ -49,15 +48,13 @@
         android:text="@string/quoter_btn"
         android:id="@+id/quoters"
         android:checked="true"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:elegantTextHeight="false"
         android:textOff="@string/quoter_btn"
         android:textOn="@string/quoter_btn"
         android:onClick="onSoundSelected"
-        android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView" />
+        android:layout_above="@+id/barCounter"
+        android:layout_toLeftOf="@+id/eights"
+        android:layout_toStartOf="@+id/eights" />
 
     <ToggleButton
         android:layout_width="wrap_content"
@@ -69,7 +66,8 @@
         android:textOn="@string/eights_btn"
         android:onClick="onSoundSelected"
         android:layout_alignTop="@+id/quoters"
-        android:layout_alignParentStart="false" />
+        android:layout_toLeftOf="@+id/sixteenths"
+        android:layout_toStartOf="@+id/sixteenths" />
 
     <ToggleButton
         android:layout_width="wrap_content"
@@ -79,21 +77,23 @@
         android:checked="false"
         android:textOff="@string/sixteenths_btn"
         android:textOn="@string/sixteenths_btn"
+        android:onClick="onSoundSelected"
         android:layout_alignTop="@+id/eights"
-        android:layout_toRightOf="@+id/eights"
-        android:onClick="onSoundSelected" />
+        android:layout_alignLeft="@+id/barCounter"
+        android:layout_alignStart="@+id/barCounter" />
 
     <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/triplets_btn"
         android:id="@+id/triplets"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/sixteenths"
         android:checked="false"
         android:textOff="@string/triplets_btn"
         android:textOn="@string/triplets_btn"
-        android:onClick="onSoundSelected" />
+        android:onClick="onSoundSelected"
+        android:layout_alignTop="@+id/sixteenths"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -109,6 +109,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/tempoPicker"
         android:focusableInTouchMode="false"
-        android:layout_below="@+id/scale" />
+        android:layout_below="@+id/textView"
+        android:layout_toLeftOf="@+id/eights"
+        android:layout_toStartOf="@+id/eights" />
 
 </RelativeLayout>
